@@ -1,0 +1,12 @@
+code,name,slope_before,slope_after,break_year,noise,missing_year
+0,null_linear,0.03,0.03,,True,
+1,recovery_2008,-0.22,0.3,2008.0,True,
+2,recovery_2012,-0.22,0.3,2012.0,True,
+3,reverse_2010,0.22,-0.3,2010.0,True,
+4,early_recovery_2003,-0.28,0.34,2003.0,True,
+5,late_recovery_2017,-0.28,0.34,2017.0,True,
+6,exact_linear,0.08,0.08,,False,
+7,exact_hinge_2010,-0.25,0.35,2010.0,False,
+8,missing_2010,0.03,0.03,,True,2010.0
+9,boundary_recovery_2005,-0.24,0.32,2005.0,True,
+10,boundary_recovery_2015,-0.24,0.32,2015.0,True,

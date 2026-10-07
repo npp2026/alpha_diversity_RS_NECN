@@ -1,0 +1,20 @@
+{
+  "release": "1.6.9",
+  "immediate_base_version": "1.6.8",
+  "immediate_base_filename": "FEM_Supplementary_Code_v1.6.8_cleaned.zip",
+  "immediate_base_archive_sha256": "d53c0869f04329402e1be624e776bbeaa6e469ac17c90f61d9604291fea7e2f9",
+  "breakpoint_source": {
+    "filename": "01-break_year_v5_6_2_PUBLICATION_READY_FINAL_SEALED.zip",
+    "sha256": "3f3c92bf7ce8de9c9947bb9e3eda8f07c5ce7df97f98de55cf9cab2b44a938cf",
+    "status": "Identifier inherited from supplied v1.6.8; original archive was not supplied or independently verified."
+  },
+  "derivation": "Historical freeze workflows and review artifacts archived; current analysis, diagnostics, method parameters and upstream synthetic fixtures retained; submission-facing documentation and root check scaffolding compacted.",
+  "historical_archive": "FEM_Historical_Audit_Archive_v1.6.8.zip",
+  "historical_archive_required_for_analysis": false,
+  "license_status": "No license terms were supplied; inherited author attribution is retained.",
+  "method_update_parent": {
+    "filename": "FEM_Supplementary_Code_v1.6.9_analysis_only.zip",
+    "archive_sha256": "bd8632e1f64979b4f80c486e4014c9ec4630630633aba14020334295f97c20b2"
+  },
+  "method_update": "Author-confirmed fixed production 15 independent of VSURF; Figure2/source/Bootstrap raw RF OOF; annual OOB-QM retained; MS/SI alignment and run contracts consolidated into README."
+}

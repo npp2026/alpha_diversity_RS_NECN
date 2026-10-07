@@ -1,0 +1,4 @@
+# Common-grid state–trajectory analysis
+Inputs are the pre-aligned 1-km annual observations from module 08 and ONE static positive q95 age-100 raster for each response from module 06. Potential filenames are Q95_Rich_tree_age100_1km.tif and Q95_Shannon_wiener_age100_1km.tif. Set POTENTIAL_DIR to their directory. POT_REF_YEARS_R is rejected. Do not duplicate static potential files into artificial annual series.
+
+RF uses 2016–2020 mean realized diversity / static age-100 q95. High RF >=.80. Trend: 2005–2020 Sen + Hamed–Rao MK + BH. The original paired bootstrap, threshold/block/bias sensitivities and common-support contrasts remain. Completely constant valid series get p=1. Run run_all_submission.sh after setting the paths in ../README.md#run-guide. Native 30 m -> 1 km preparation is performed in module 08, which supports the non-integer resolution ratio.

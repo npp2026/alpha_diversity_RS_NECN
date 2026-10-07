@@ -1,0 +1,11 @@
+#!/usr/bin/env Rscript
+args0 <- commandArgs(FALSE); farg <- grep("^--file=", args0, value = TRUE)
+PROJECT_DIR <- if (length(farg)) normalizePath(dirname(sub("^--file=", "", farg[[1L]])), winslash = "/", mustWork = TRUE) else normalizePath(getwd(), winslash = "/", mustWork = TRUE)
+source(file.path(PROJECT_DIR, "R", "load_all.R")); load_v56_modules(PROJECT_DIR)
+source(file.path(PROJECT_DIR, "validation", "rho_stress_gate.R"))
+res <- run_rho_stress_gate_v56(PROJECT_DIR)
+cat("v5.6 exact linear-diagnostic rho stress gate completed in: ", res$ctx$root, "\n", sep = "")
+cat("Diagnostic gate: ", res$classification$overall_gate, "\n", sep = "")
+cat("Sensitivity severity: ", res$classification$severity, "\n", sep = "")
+cat("Report: ", res$report, "\n", sep = "")
+cat("Decision CSV: ", file.path(res$ctx$root, "validation", "rho_stress_gate_decision.csv"), "\n", sep = "")

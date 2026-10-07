@@ -1,0 +1,50 @@
+version: v5.6-real-subset-audit-v1
+
+# Operational audit settings only. These do not redefine the publication model.
+subset:
+  side_cells: 256
+  candidate_grid: 5
+  selection_seed: 24680
+  reuse_existing_subset: true
+  # Select a window with high complete-series coverage and, secondarily,
+  # more represented regions. Full-input missingness is audited separately.
+  min_preferred_complete_fraction: 0.50
+
+mode:
+  # quick | standard | full
+  default: standard
+
+# Standard mode keeps the publication SupF/rho calibration settings, while
+# reducing expensive bootstrap settings because this is a data/code
+# audit rather than the final inferential run.
+standard_overrides:
+  pixel_bootstrap_B: 200
+  pixel_bootstrap_min_ci: 40
+  trajectory_B: 1000
+  trajectory_supf_mc_B: 20000
+  trajectory_rho_bias_sim_B: 2000
+  trajectory_min_ci: 100
+
+quick_overrides:
+  rho_sample_n: 2000
+  rho_bias_sim_B: 2000
+  supf_mc_B: 20000
+  supf_mc_chunk: 5000
+  pixel_bootstrap_B: 50
+  pixel_bootstrap_min_ci: 10
+  trajectory_B: 200
+  trajectory_supf_mc_B: 5000
+  trajectory_rho_bias_sim_B: 500
+  trajectory_min_ci: 20
+
+thresholds:
+  min_complete_fraction_each_response: 0.50
+  min_combined_complete_fraction: 0.40
+  rho_model_difference_warning: 0.10
+  boundary_share_warning: 0.25
+  regional_valid_area_fraction_warning: 0.95
+  bootstrap_unstable_fraction_warning: 0.50
+  spatial_within1_year_warning: 0.50
+  max_region_overlap_fraction: 0.000001
+  annual_valid_fraction_range_warning: 0.05
+  annual_mean_mad_z_warning: 8

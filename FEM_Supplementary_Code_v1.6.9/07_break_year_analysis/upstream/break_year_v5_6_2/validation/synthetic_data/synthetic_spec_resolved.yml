@@ -1,0 +1,53 @@
+version: synthetic-v1
+seed: 560601
+rng_kind: "L'Ecuyer-CMRG"
+raster:
+  nrow: 24
+  ncol: 24
+  resolution_m: 1000
+  xmin: 0
+  ymin: 0
+  crs: "EPSG:3857"
+years: [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020]
+responses:
+  SR:
+    baseline: 20.0
+    intercept_sd: 0.8
+    noise_sd: 0.18
+    rho: 0.35
+    slope_scale: 1.0
+  Shannon:
+    baseline: 3.2
+    intercept_sd: 0.12
+    noise_sd: 0.035
+    rho: 0.15
+    slope_scale: 0.16
+classes:
+  - {code: 0, name: null_linear, slope_before: 0.03, slope_after: 0.03, break_year: null, noise: true}
+  - {code: 1, name: recovery_2008, slope_before: -0.22, slope_after: 0.30, break_year: 2008, noise: true}
+  - {code: 2, name: recovery_2012, slope_before: -0.22, slope_after: 0.30, break_year: 2012, noise: true}
+  - {code: 3, name: reverse_2010, slope_before: 0.22, slope_after: -0.30, break_year: 2010, noise: true}
+  - {code: 4, name: early_recovery_2003, slope_before: -0.28, slope_after: 0.34, break_year: 2003, noise: true}
+  - {code: 5, name: late_recovery_2017, slope_before: -0.28, slope_after: 0.34, break_year: 2017, noise: true}
+  - {code: 6, name: exact_linear, slope_before: 0.08, slope_after: 0.08, break_year: null, noise: false}
+  - {code: 7, name: exact_hinge_2010, slope_before: -0.25, slope_after: 0.35, break_year: 2010, noise: false}
+  - {code: 8, name: missing_2010, slope_before: 0.03, slope_after: 0.03, break_year: null, noise: true, missing_year: 2010}
+  - {code: 9, name: boundary_recovery_2005, slope_before: -0.24, slope_after: 0.32, break_year: 2005, noise: true}
+  - {code: 10, name: boundary_recovery_2015, slope_before: -0.24, slope_after: 0.32, break_year: 2015, noise: true}
+layout:
+  # row/col are 1-based raster matrix coordinates, row 1 at the north edge.
+  - {class: recovery_2008, rows: [3, 8], cols: [3, 8]}
+  - {class: reverse_2010, rows: [3, 8], cols: [16, 21]}
+  - {class: exact_linear, rows: [1, 2], cols: [11, 12]}
+  - {class: early_recovery_2003, rows: [10, 14], cols: [2, 6]}
+  - {class: exact_hinge_2010, rows: [11, 12], cols: [9, 10]}
+  - {class: boundary_recovery_2005, rows: [10, 13], cols: [17, 20]}
+  - {class: boundary_recovery_2015, rows: [10, 13], cols: [21, 24]}
+  - {class: recovery_2012, rows: [15, 21], cols: [15, 21]}
+  - {class: late_recovery_2017, rows: [16, 20], cols: [3, 7]}
+  - {class: missing_2010, rows: [22, 24], cols: [1, 4]}
+regions:
+  - {id: 1, name: NW, rows: [1, 12], cols: [1, 12]}
+  - {id: 2, name: NE, rows: [1, 12], cols: [13, 24]}
+  - {id: 3, name: SW, rows: [13, 24], cols: [1, 12]}
+  - {id: 4, name: SE, rows: [13, 24], cols: [13, 24]}

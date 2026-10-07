@@ -1,0 +1,3 @@
+response,year,prediction,predictors,train_rds,model_rds
+Rich_tree,2001,/absolute/Rich_tree_2001_QM.tif,/absolute/Combined_2001.vrt,/absolute/Rich_tree_train.rds,/absolute/Rich_tree_Final_Model.rds
+Shannon_wiener,2001,/absolute/Shannon_wiener_2001_QM.tif,/absolute/Combined_2001.vrt,/absolute/Shannon_wiener_train.rds,/absolute/Shannon_wiener_Final_Model.rds

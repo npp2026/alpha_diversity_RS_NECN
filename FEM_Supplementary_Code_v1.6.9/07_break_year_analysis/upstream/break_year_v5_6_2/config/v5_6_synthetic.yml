@@ -1,0 +1,147 @@
+version: v5.6-synthetic-e2e
+
+data:
+  years: [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020]
+  responses:
+    SR:
+      folder: "validation/synthetic_data/SR"
+      pattern: '^synthetic_SR_([0-9]{4})_1km\.tif$'
+    Shannon:
+      folder: "validation/synthetic_data/Shannon"
+      pattern: '^synthetic_Shannon_([0-9]{4})_1km\.tif$'
+  regions_shapefile: "validation/synthetic_data/regions/synthetic_regions.shp"
+  region_id_field: "NAME"
+  region_label_field: "NAME"
+  region_group_field: ""
+  region_group_label_field: ""
+  mask_to_regions: true
+  require_complete_series: true
+  input_version: "synthetic-v1"
+
+analysis:
+  primary:
+    min_segment: 5
+    rho_source: empirical_corrected
+    fdr: BH
+    alpha: 0.05
+    direction: decline_recovery
+  slope_tol:
+    SR: 0
+    Shannon: 0
+  tie_rule: earliest
+
+rho_estimation:
+  enabled: true
+  separate_by_response: true
+  residual_model: hinge
+  sample_n: 500
+  oversample_factor: 2
+  bias_correction:
+    enabled: true
+    simulation_B: 1000
+    grid_min: -0.8
+    grid_max: 0.8
+    grid_step: 0.05
+  max_abs_rho: 0.80
+  diagnostic_models: [linear, hinge]
+  diagnostic_warning_difference: 0.10
+  hinge_min_segment: 3
+
+supf:
+  # Small enough for CI/smoke E2E, but fine enough that BH can reject when many
+  # strong synthetic pixels pile up at the Monte Carlo p-value floor.
+  mc_B: 4999
+  mc_chunk: 1000
+  p_rule: greater_equal
+  cache: true
+  cache_dir: "_cache/supf_synthetic"
+
+multiple_testing:
+  family: per_response
+  primary_method: BH
+  sensitivity_methods: [BH, BY]
+  alpha: 0.05
+
+sensitivity:
+  boundary:
+    enabled: true
+    min_segments: [5, 4, 3, 2]
+  rho:
+    enabled: true
+    values: [0, empirical, 0.4]
+  multiplicity:
+    enabled: true
+    methods: [BH, BY]
+
+bootstrap:
+  pixel:
+    enabled: true
+    target: primary_recovery_pixels
+    B: 200
+    rejection_rule: frozen_primary_fdr_p_cutoff
+    min_valid_replicates_for_ci: 30
+    innovation: gaussian_ar1
+    batch_size: 128
+    max_target_pixels: 1000
+  trajectory:
+    enabled: true
+    B: 400
+    supf_mc_B: 4999
+    innovation: gaussian_ar1
+    min_valid_replicates_for_ci: 50
+    rho_bias_sim_B: 1000
+    min_valid_area_fraction: 0.95
+
+spatial:
+  connected_clusters: true
+  connectivity: 8
+  block_jackknife:
+    enabled: true
+    block_size_m: 6000
+  scenario_iou:
+    enabled: true
+    adjusted: true
+    cluster_matching: true
+
+runtime:
+  # Backward-compatible scalar; runtime.parallel is the authoritative scheduler.
+  cores: 4
+  parallel:
+    # Cross-platform PSOCK outer parallelism. `MAX_CORES` caps max_workers.
+    # Custom terra::app remains single-worker; nested pools are disabled.
+    enabled: true
+    backend: psock
+    workers: auto
+    max_workers: 4
+    nested_parallelism: false
+    blas_threads_per_worker: 1
+    strategy:
+      response: true
+      scenario: true
+      supf_mc: true
+      pixel_bootstrap: true
+      validation_simulation: false
+  overwrite: true
+
+rng:
+  kind: "L'Ecuyer-CMRG"
+  master_seed: 560602
+
+output:
+  root: "synthetic_outputs_v5_6"
+
+validation:
+  run_unit_tests: true
+  run_smoke_tests: true
+  run_simulation_null: false
+  run_simulation_power: false
+  run_bootstrap_coverage: false
+  simulation_B: 500
+  bootstrap_coverage_outer: 100
+  bootstrap_coverage_inner: 200
+  synthetic_e2e:
+    strong_recovery_recall_min: 0.60
+    null_recovery_fpr_max: 0.05
+    reverse_recovery_rate_max: 0.05
+    rho_abs_error_warning: 0.25
+    boundary_break_tolerance_years: 1

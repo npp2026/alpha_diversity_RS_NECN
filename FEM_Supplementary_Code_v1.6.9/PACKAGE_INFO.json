@@ -1,0 +1,40 @@
+{
+  "software_version": "1.6.9",
+  "base_version": "1.6.8",
+  "date": "2026-10-07",
+  "edition": "analysis submission candidate; compact documentation and checks",
+  "main_guide": "README.md",
+  "run_guide": "README.md",
+  "validation": null,
+  "real_study_reproduced": false,
+  "current_release_R_tests_passed": null,
+  "inference_method_parameters_changed": false,
+  "numerical_equivalence_verified": false,
+  "upstream_retained_files": 107,
+  "upstream_byte_identical_to_immediate_base": 91,
+  "historical_archive_required_for_analysis": false,
+  "interface_changes": [
+    "Historical freeze/refreeze/finalizer modes and launchers removed; obsolete environment flags fail explicitly.",
+    "sealed_profile.R renamed method_profile.R; method guard conditions preserved.",
+    "run_manifest.json no longer emits the unused publication_freeze field; rho diagnostic result uses diagnostic_gate.",
+    "Unused figure settings removed from upstream diagnostic configurations; legacy absolute input paths made relative.",
+    "Scenario predictions now reference raw RF OOF; calibrated_predictions stores QM diagnostics separately.",
+    "All postprocess entries explicitly select raw RF OOF and add Prediction_Type=RF_raw to CSVs.",
+    "Production metadata records fixed_15, vsurf_screening_used=FALSE and training_OOB calibration.",
+    "Submission package consolidated INPUTS_OUTPUTS, RUN_GUIDE, METHODS_MAP and MS/SI alignment into README.md; root tests, validation records and environment template removed.",
+    "Submission package consolidated INPUTS_OUTPUTS, RUN_GUIDE, METHODS_MAP and MS/SI alignment into README.md; root tests, validation records and environment template removed."
+  ],
+  "revision": "rawRF_fixed15_ms_si_aligned_submission_cleanup",
+  "method_update_date_utc": "2026-10-07",
+  "prediction_input_changed": true,
+  "method_update": {
+    "production_predictors": "original fixed 15; unchanged for both responses",
+    "VSURF_scope": "fold-local validation only; no automatic production replacement",
+    "Figure2_source_bootstrap_prediction": "raw outer-test RF OOF",
+    "annual_mapping_calibration": "training-OOB QM; unchanged",
+    "legacy_raw_predictions_supported": true,
+    "R_synthetic_regression_status": "NOT_RUN: Rscript unavailable",
+    "original_data_validation_status": "NOT_RUN: study inputs not supplied",
+    "MS_SI_alignment_record": "README.md#ms/si-alignment"
+  }
+}

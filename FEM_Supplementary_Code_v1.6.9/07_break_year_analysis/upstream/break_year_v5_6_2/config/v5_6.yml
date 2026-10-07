@@ -1,0 +1,155 @@
+version: FEM-1.6.9-break-year-v5.6.2-derived
+
+# All statistical parameters live here. Environment variables are limited to
+# BREAK_CONFIG, DATA_ROOT, OUTPUT_ROOT and MAX_CORES configure analysis execution.
+data:
+  years: [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020]
+  responses:
+    SR:
+      folder: "Rich_tree"
+      pattern: '^Rich_tree_([0-9]{4})_1km\.tif$'
+    Shannon:
+      folder: "Shannon_wiener"
+      pattern: '^Shannon_wiener_([0-9]{4})_1km\.tif$'
+  regions_shapefile: "NE_Mountain_Output/NE_Mountain_Regions_All.shp"
+  # Feature-level regional analysis uses province-by-mountain-system polygons.
+  # Keep machine ID, publication label, and broader mountain-system grouping separate.
+  region_id_field: "Reg_EN"
+  region_label_field: "Reg_CN"
+  region_group_field: "L2_code"
+  region_group_label_field: "L2_name"
+  mask_to_regions: true
+  require_complete_series: true
+  input_version: ""
+
+analysis:
+  primary:
+    min_segment: 5
+    rho_source: empirical_corrected
+    fdr: BH
+    alpha: 0.05
+    direction: decline_recovery
+  slope_tol:
+    SR: 0
+    Shannon: 0
+  tie_rule: earliest
+
+rho_estimation:
+  enabled: true
+  separate_by_response: true
+  # Primary AR(1) nuisance rho is estimated after removing a flexible single-hinge trend.
+  # Simulation inversion corrects the short-series/selection bias; linear residual rho is retained as a diagnostic for signal contamination.
+  residual_model: hinge
+  sample_n: 10000
+  oversample_factor: 4
+  bias_correction:
+    enabled: true
+    simulation_B: 10000
+    grid_min: -0.8
+    grid_max: 0.8
+    grid_step: 0.02
+  max_abs_rho: 0.80
+  diagnostic_models: [linear, hinge]
+  diagnostic_warning_difference: 0.10
+  hinge_min_segment: 3
+
+supf:
+  mc_B: 200000
+  mc_chunk: 10000
+  p_rule: greater_equal
+  cache: true
+  cache_dir: "_cache/supf"
+
+multiple_testing:
+  family: per_response
+  primary_method: BH
+  sensitivity_methods: [BH, BY]
+  alpha: 0.05
+
+sensitivity:
+  boundary:
+    enabled: true
+    min_segments: [5, 4, 3, 2]
+  rho:
+    enabled: true
+    # `linear_diagnostic` is resolved per response from this run's
+    # rho_model_comparison.csv. It is a stress test only; primary remains the
+    # prevalidated hinge-residual empirical estimator.
+    values: [0, 0.2, empirical, linear_diagnostic, 0.4, 0.6]
+  multiplicity:
+    enabled: true
+    methods: [BH, BY]
+
+bootstrap:
+  pixel:
+    enabled: true
+    target: primary_recovery_pixels
+    B: 1000
+    rejection_rule: frozen_primary_fdr_p_cutoff
+    min_valid_replicates_for_ci: 100
+    innovation: gaussian_ar1
+    batch_size: 2000
+    max_target_pixels: 200000
+  trajectory:
+    enabled: true
+    B: 5000
+    supf_mc_B: 50000
+    innovation: gaussian_ar1
+    min_valid_replicates_for_ci: 200
+    rho_bias_sim_B: 5000
+    min_valid_area_fraction: 0.95
+
+spatial:
+  connected_clusters: true
+  connectivity: 8
+  block_jackknife:
+    enabled: true
+    block_size_m: 50000
+  scenario_iou:
+    enabled: true
+    adjusted: true
+    cluster_matching: true
+
+runtime:
+  # Backward-compatible scalar; runtime.parallel is the authoritative scheduler.
+  cores: 16
+  parallel:
+    # Cross-platform PSOCK outer parallelism. `MAX_CORES` caps max_workers.
+    # Custom terra::app remains single-worker; nested pools are disabled.
+    enabled: true
+    backend: psock
+    workers: auto
+    max_workers: 16
+    nested_parallelism: false
+    blas_threads_per_worker: 1
+    strategy:
+      response: true
+      scenario: true
+      supf_mc: true
+      pixel_bootstrap: true
+      validation_simulation: false
+  overwrite: false
+
+rng:
+  kind: "L'Ecuyer-CMRG"
+  master_seed: 12345
+
+output:
+  root: "outputs_v5_6"
+
+
+validation:
+  # Audit-decision policy only; these values do not enter SupF/FDR inference.
+  rho_stress_gate:
+    robust_retention_min: 0.50
+    collapse_retention_max: 0.10
+    mc_floor_clear_multiplier: 10
+    modal_year_shift_warn: 1
+  run_unit_tests: true
+  run_smoke_tests: true
+  run_simulation_null: false
+  run_simulation_power: false
+  run_bootstrap_coverage: false
+  simulation_B: 1000
+  bootstrap_coverage_outer: 200
+  bootstrap_coverage_inner: 400
